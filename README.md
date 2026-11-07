@@ -1,5 +1,5 @@
 # SemanticLens
-
+📄 **Paper:** [SemanticLens: Design and Implementation of an NLP-Based Retrieval Website](paper/semanticlens-paper.pdf)
 🔗 **Live demo:** https://andres-emaya.github.io/semanticlens/
 
 An NLP-based retrieval website for the **CLEF IAPR TC-12** image annotation collection (20,000 English annotations). It combines lexical search, query operators, stemming, query expansion and TF-IDF ranking, and shows *why* each result was returned.
