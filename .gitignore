@@ -1,0 +1,18 @@
+# dependencies
+node_modules
+
+# Next.js build output
+.next/
+out/
+
+# environment variables
+.env
+.env*.local
+
+# raw IAPR TC-12 annotations (the site uses public/data/iaprtc12-eng.json)
+data/iaprtc12/
+
+# logs and caches
+*.log
+*.tsbuildinfo
+.DS_Store
