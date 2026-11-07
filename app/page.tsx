@@ -564,8 +564,10 @@ function ResultCard({ hit, index }: { hit: SearchHit; index: number }) {
     <motion.article initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.035 }} whileHover={{ y: -5 }} className="overflow-hidden rounded-lg border border-[#d8d0bd] bg-white shadow-[0_18px_45px_rgba(35,31,22,0.10)]">
       <div className="relative aspect-[4/3] overflow-hidden bg-[#161a1a]">
         {showImage && hit.image ? <Image src={hit.image} alt={hit.title} width={640} height={480} unoptimized className="h-full w-full object-cover transition duration-500 hover:scale-105" onError={() => setShowImage(false)} /> : <div className="annotation-preview absolute inset-0 flex flex-col items-center justify-center gap-3 text-center text-[#f8f4ea]"><ImageIcon size={36} /><span className="max-w-[220px] text-sm font-bold">CLEF annotation preview</span><span className="rounded-md bg-white/10 px-2 py-1 text-xs text-[#d6ded5]">{hit.id}</span></div>}
-        <div className="absolute left-3 top-3 rounded-md bg-[#151815]/85 px-2.5 py-1.5 text-xs font-black text-[#f8f4ea] backdrop-blur">rank {index + 1}</div>
-        <div className={`absolute right-3 top-3 rounded-md px-2.5 py-1.5 text-xs font-black backdrop-blur ${hit.imageSource === "dataset" ? "bg-[#dff7ef]/90 text-[#173d36]" : "bg-[#f7c66a]/92 text-[#3f2c00]"}`}>{sourceLabel}</div>
+        <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
+          <div className="shrink-0 rounded-md bg-[#151815]/85 px-2.5 py-1.5 text-xs font-black text-[#f8f4ea] backdrop-blur">rank {index + 1}</div>
+          <div className={`rounded-md px-2.5 py-1.5 text-right text-xs font-black backdrop-blur ${hit.imageSource === "dataset" ? "bg-[#dff7ef]/90 text-[#173d36]" : "bg-[#f7c66a]/90 text-[#3f2c00]"}`}>{sourceLabel}</div>
+        </div>
       </div>
       <div className="p-4">
         <div className="flex items-start justify-between gap-3"><h3 className="text-lg font-black leading-6 text-[#151815]">{hit.title}</h3><span className="rounded-md bg-[#dff7ef] px-2 py-1 text-sm font-black text-[#173d36]">{hit.score}</span></div>

@@ -13,24 +13,43 @@ export const isStaticSite = process.env.NEXT_PUBLIC_STATIC_SITE === "true";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-let indexPromise: Promise<Index> | null = null;
+type SearchData = { index: Index; images: Set<string> };
 
-function loadIndex(): Promise<Index> {
-  indexPromise ??= fetch(`${basePath}/data/iaprtc12-eng.json`)
-    .then((response) => {
-      if (!response.ok) throw new Error("Could not load the annotation data.");
-      return response.json() as Promise<AnnotationRecord[]>;
-    })
-    .then(buildIndex)
+let dataPromise: Promise<SearchData> | null = null;
+
+async function fetchJson<T>(file: string, fallback?: T): Promise<T> {
+  const response = await fetch(`${basePath}/data/${file}`);
+  if (!response.ok) {
+    if (fallback !== undefined) return fallback;
+    throw new Error("Could not load the annotation data.");
+  }
+  return response.json() as Promise<T>;
+}
+
+function loadData(): Promise<SearchData> {
+  dataPromise ??= Promise.all([
+    fetchJson<AnnotationRecord[]>("iaprtc12-eng.json"),
+    // List of dataset images published with the site (built by scripts/build-static.mjs).
+    fetchJson<string[]>("images.json", [])
+  ])
+    .then(([records, images]) => ({ index: buildIndex(records), images: new Set(images) }))
     .catch((error) => {
-      indexPromise = null;
+      dataPromise = null;
       throw error;
     });
 
-  return indexPromise;
+  return dataPromise;
 }
 
 export async function searchInBrowser(options: SearchOptions): Promise<SearchResponse> {
-  const index = await loadIndex();
-  return searchCollection(options, index);
+  const { index, images } = await loadData();
+  const hasDatasetImage = (imageUrl: string) => images.has(imageUrl.replace(/^\/iaprtc12\//, ""));
+  const result = searchCollection(options, index, hasDatasetImage);
+
+  return {
+    ...result,
+    hits: result.hits.map((hit) =>
+      hit.imageSource === "dataset" ? { ...hit, image: `${basePath}${hit.image}` } : hit
+    )
+  };
 }

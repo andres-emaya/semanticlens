@@ -16,3 +16,6 @@ data/iaprtc12/
 *.log
 *.tsbuildinfo
 .DS_Store
+
+# generated during the static build
+public/data/images.json
